@@ -137,6 +137,7 @@ def get_cythonize_options():
     """
     # Configure optional Cython coverage.
     cythonize_options = {
+        "language": "c++",
         "language_level": sys.version_info[0],
         "compiler_directives": {
             "c_string_type": "str",
