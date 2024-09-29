@@ -78,10 +78,14 @@ jobs:
           VCPKG_DEFAULT_TRIPLET: ${{ matrix.triplet }}
         shell: bash
         run: |
+          # Workaround for vcpkg downloading issue:
+          # https://github.com/microsoft/vcpkg/issues/41199#issuecomment-2378255699
+          export SystemDrive="$SYSTEMDRIVE"
+          export SystemRoot="$SYSTEMROOT"
+          export windir="$WINDIR"
           cd "$VCPKG_INSTALLATION_ROOT"
           git pull > nul
           ./bootstrap-vcpkg.bat -disableMetrics
-          vcpkg install --feature-flags="versions,manifests" zlib
           vcpkg install --feature-flags="versions,manifests" --x-manifest-root=${GITHUB_WORKSPACE}/ci --x-install-root=$VCPKG_INSTALLATION_ROOT/installed
           mkdir -p ${GITHUB_WORKSPACE}/pyproj/proj_dir/share/proj
           cp "$VCPKG_INSTALLATION_ROOT/installed/${{ matrix.triplet }}/share/proj/"* ${GITHUB_WORKSPACE}/pyproj/proj_dir/share/proj/
