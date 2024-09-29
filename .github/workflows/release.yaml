@@ -62,15 +62,15 @@ jobs:
 
       - uses: actions/setup-python@v5
 
-      # - name: Cache vcpkg
-      #   if: contains(matrix.os, 'windows')
-      #   uses: actions/cache@v4
-      #   id: vcpkgcache
-      #   with:
-      #     path: |
-      #       ${{ matrix.vcpkg_cache }}
-      #     # bump the last digit to avoid using previous build cache
-      #     key: ${{ matrix.os }}-${{ matrix.triplet }}-vcpkg-proj${{ env.PROJ_VERSION }}-cache0
+      - name: Cache vcpkg
+        if: contains(matrix.os, 'windows')
+        uses: actions/cache@v4
+        id: vcpkgcache
+        with:
+          path: |
+            ${{ matrix.vcpkg_cache }}
+          # bump the last digit to avoid using previous build cache
+          key: ${{ matrix.os }}-${{ matrix.triplet }}-vcpkg-proj${{ env.PROJ_VERSION }}-cache0
 
       - name: Install PROJ with vcpkg
         if: contains(matrix.os, 'windows')
@@ -114,7 +114,7 @@ jobs:
             PROJ_VERSION=${{ env.PROJ_VERSION }}
             PROJ_DIR=$VCPKG_INSTALLATION_ROOT/installed/${{ matrix.triplet }}
           CIBW_BEFORE_BUILD_WINDOWS: "python -m pip install delvewheel"
-          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path C:/vcpkg/installed/${{ matrix.triplet }}/bin -w {dest_dir} {wheel}"
+          # CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair --add-path C:/vcpkg/installed/${{ matrix.triplet }}/bin -w {dest_dir} {wheel}"
           CIBW_BEFORE_ALL_LINUX: bash ./ci/proj-compile-wheels.sh
           CIBW_BEFORE_ALL_MACOS: bash ./ci/proj-compile-wheels.sh
           CIBW_TEST_REQUIRES: cython pytest numpy --config-settings=setup-args="-Dallow-noblas=true"
